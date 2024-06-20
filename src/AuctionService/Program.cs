@@ -1,3 +1,4 @@
+using Data.AuctionService;
 using Entities.AuctionService;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
@@ -17,5 +18,14 @@ var app = builder.Build();
 app.UseAuthorization();
 
 app.MapControllers();
+
+try
+{
+    DbSeed.Seed(app);
+}
+catch
+{
+    Console.WriteLine("Could not seed database");
+}
 
 app.Run();

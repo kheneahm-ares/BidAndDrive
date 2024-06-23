@@ -13,6 +13,19 @@ services:
       - 5432:5432
     volumes:
       - pgdata:/var/lib/postgresql/data
+    
+  mongo:
+    image: mongo
+    restart: always
+    ports:
+      - 27017:27017
+    environment:
+      - MONGO_INITDB_DATABASE=search_service
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=mongodb
+    volumes:
+      - mongodata:/var/lib/mongodb/data
 
 volumes:
   pgdata:
+  mongodata:

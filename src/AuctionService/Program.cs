@@ -1,5 +1,6 @@
 using Data.AuctionService;
 using Entities.AuctionService;
+using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
@@ -15,6 +16,16 @@ builder.Services.AddDbContext<AuctionDbContext>(options =>
 });
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
+builder.Services.AddMassTransit(config => 
+{
+
+    //will use localhost by default
+    config.UsingRabbitMq((context, cfg) => {
+        cfg.ConfigureEndpoints(context);
+    });
+        
+});
 
 var app = builder.Build();
 

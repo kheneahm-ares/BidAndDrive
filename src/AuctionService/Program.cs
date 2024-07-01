@@ -19,6 +19,16 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 builder.Services.AddMassTransit(config => 
 {
+    //outbox
+    config.AddEntityFrameworkOutbox<AuctionDbContext>(
+        o => {
+            //look into outbox every 10 seconds and deliver if any
+            o.QueryDelay = TimeSpan.FromSeconds(10);
+
+            o.UsePostgres();
+            o.UseBusOutbox();
+        }
+    );
 
     //will use localhost by default
     config.UsingRabbitMq((context, cfg) => {

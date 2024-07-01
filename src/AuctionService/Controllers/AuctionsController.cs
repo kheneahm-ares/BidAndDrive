@@ -54,10 +54,12 @@ public class AuctionsController : ControllerBase
         var auction = _mapper.Map<Auction>(dto);
         auction.Seller = "test";
         _dbContext.Auctions.Add(auction);
-        var result = await _dbContext.SaveChangesAsync();
 
+        //because of theoutbox config, we can add this to the batched transaction
         var newAuction = _mapper.Map<AuctionDto>(auction);
         await _publishEndpoint.Publish(_mapper.Map<AuctionCreated>(newAuction));
+
+        var result = await _dbContext.SaveChangesAsync();
 
         if (result == 0)
         {

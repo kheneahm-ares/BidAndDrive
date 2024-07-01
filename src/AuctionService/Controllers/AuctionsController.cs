@@ -90,6 +90,8 @@ public class AuctionsController : ControllerBase
         auction.Item.Mileage = dto.Mileage ?? auction.Item.Mileage;
         auction.Item.Color = dto.Color ?? auction.Item.Color;
 
+        await _publishEndpoint.Publish(_mapper.Map<AuctionUpdated>(auction));
+
         var result = await _dbContext.SaveChangesAsync();
         if (result == 0)
         {
@@ -115,6 +117,8 @@ public class AuctionsController : ControllerBase
         }
 
         //todo: check if user is the seller
+
+        await _publishEndpoint.Publish<AuctionDeleted>(new {Id = auction.Id.ToString()});
 
         
         _dbContext.Auctions.Remove(auction);

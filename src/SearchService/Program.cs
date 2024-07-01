@@ -22,6 +22,13 @@ builder.Services.AddMassTransit(config =>
 
     //will use localhost by default
     config.UsingRabbitMq((context, cfg) => {
+
+        //this will retry from exception during consumptions
+        cfg.ReceiveEndpoint("search-auction-created", e => {
+            e.UseMessageRetry(r => r.Interval(5, 5)); //try at most 5 times every 5 seconds
+            e.ConfigureConsumer<AuctionCreatedConsumer>(context);
+        });
+
         cfg.ConfigureEndpoints(context);
     });
         
